@@ -187,7 +187,80 @@
     <div class="main-header">
         <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/08/Risorsa-2x.png" alt="Logo Official">
         <h1 style="font-size: 32px; color: var(--dark-base);">Autoscuola Rampone</h1>
-        <p style="color: var(--text-secondary); font-weight: 500;">High-Fidelity Mobile App Prototype (Student Area)</p>
+        <p style="color: var(--text-secondary); font-weight: 500;">Prototipo App Mobile — Area Studenti</p>
+    </div>
+
+    <!-- DESCRIZIONE APP -->
+    <div style="max-width: 800px; margin: 0 auto 80px auto; background: white; border-radius: 20px; padding: 48px; box-shadow: 0 4px 24px rgba(0,0,0,0.07);">
+
+        <div style="margin-bottom: 40px;">
+            <h2 style="font-size: 24px; color: var(--dark-base); margin-bottom: 16px;">Cos'è questa app?</h2>
+            <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                L'app studenti di Autoscuola Rampone è il libretto di guida digitale pensato per chi sta conseguendo la patente.
+                Sostituisce il tradizionale registro cartaceo: ogni lezione viene registrata dall'istruttore direttamente
+                dall'app, validata con firma biometrica e sincronizzata in tempo reale sul dispositivo dello studente.
+                Lo studente può sempre sapere a che punto è nel percorso, quante ore ha effettuato e prenotare la prossima guida.
+            </p>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <h2 style="font-size: 24px; color: var(--dark-base); margin-bottom: 16px;">A cosa serve?</h2>
+            <ul style="font-size: 16px; line-height: 2; color: #444; padding-left: 20px;">
+                <li>Tracciare le ore di guida effettuate per categoria (urbana, autostrada, notturna)</li>
+                <li>Visualizzare i progressi rispetto al monte ore previsto</li>
+                <li>Consultare lo storico completo delle lezioni validate dall'istruttore</li>
+                <li>Prenotare una nuova guida scegliendo data e fascia oraria disponibile</li>
+                <li>Tenere sotto controllo i dati del foglio rosa e la scadenza</li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 style="font-size: 24px; color: var(--dark-base); margin-bottom: 24px;">Le schermate</h2>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+
+                <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--surface); border-radius: 12px;">
+                    <div style="min-width: 36px; height: 36px; background: var(--dark-base); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">0</div>
+                    <div>
+                        <p style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Login</p>
+                        <p style="font-size: 15px; color: #555; line-height: 1.6;">Accesso riservato agli studenti iscritti. Le credenziali vengono create dall'amministrazione della scuola: lo studente non può registrarsi autonomamente, garantendo un accesso controllato e sicuro.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--surface); border-radius: 12px;">
+                    <div style="min-width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
+                    <div>
+                        <p style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Dashboard (Home)</p>
+                        <p style="font-size: 15px; color: #555; line-height: 1.6;">La schermata principale mostra il riepilogo del percorso: barra di avanzamento con ore totali effettuate rispetto all'obiettivo, dettaglio per tipologia di guida (urbana, autostrada, notturna) e l'ultima lezione registrata con relativo istruttore.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--surface); border-radius: 12px;">
+                    <div style="min-width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
+                    <div>
+                        <p style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Lezioni</p>
+                        <p style="font-size: 15px; color: #555; line-height: 1.6;">Elenco cronologico di tutte le lezioni effettuate, con data, durata, istruttore, tipologia di percorso e stato di convalida. In cima è sempre visibile il pulsante per prenotare una nuova guida.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--surface); border-radius: 12px;">
+                    <div style="min-width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
+                    <div>
+                        <p style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Prenotazione</p>
+                        <p style="font-size: 15px; color: #555; line-height: 1.6;">Lo studente sceglie una data dal calendario e visualizza le fasce orarie disponibili in tempo reale. Gli slot già occupati appaiono disabilitati. Una volta inviata la richiesta, la scuola la accetta e assegna l'istruttore.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: var(--surface); border-radius: 12px;">
+                    <div style="min-width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">4</div>
+                    <div>
+                        <p style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Profilo</p>
+                        <p style="font-size: 15px; color: #555; line-height: 1.6;">Visualizza i dati personali dello studente (sola lettura), le informazioni sul foglio rosa con avviso visivo se la scadenza è imminente, e l'istruttore assegnato dalla scuola.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     <div class="mockup-grid">

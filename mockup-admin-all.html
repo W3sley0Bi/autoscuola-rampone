@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoscuola Rampone - Admin Desktop Gallery</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #f39200;
+            --dark-base: #2a303c;
+            --sidebar-bg: #1e222d;
+            --background: #f1f5f9;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --success: #00d084;
+            --danger: #cf2e2e;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background-color: #cbd5e1; color: var(--text-primary); padding: 60px 0; }
+
+        .gallery-header { text-align: center; margin-bottom: 80px; }
+        .gallery-header img { width: 200px; margin-bottom: 20px; }
+        .gallery-header h1 { font-size: 36px; color: var(--dark-base); }
+
+        /* Desktop Frame Simulation */
+        .desktop-container {
+            max-width: 1400px;
+            margin: 0 auto 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .screen-label {
+            background: var(--dark-base);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 14px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .browser-frame {
+            width: 100%;
+            height: 850px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.15);
+            border: 1px solid #94a3b8;
+        }
+
+        .browser-toolbar {
+            height: 40px;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 8px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 6px; }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+
+        /* Internal Admin Layout */
+        .admin-layout { flex: 1; display: flex; overflow: hidden; }
+        
+        .sidebar { width: 260px; background: var(--sidebar-bg); padding: 32px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding: 0 12px; }
+        .sidebar-brand img { width: 32px; filter: brightness(0) invert(1); }
+        .sidebar-brand span { color: white; font-weight: 800; font-size: 16px; }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; color: #94a3b8; padding: 12px 16px; border-radius: 10px;
+            font-size: 14px; font-weight: 500; margin-bottom: 4px; text-decoration: none;
+        }
+        .nav-item.active { background: var(--primary); color: white; }
+
+        .main-view { flex: 1; display: flex; flex-direction: column; background: #f8fafc; overflow: hidden; }
+        .topbar { height: 70px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }
+        .content { flex: 1; padding: 32px; overflow-y: auto; }
+
+        /* Shared Dashboard Components */
+        h1 { font-size: 26px; font-weight: 700; margin-bottom: 24px; }
+        h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .panel { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { text-align: left; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .data-table td { padding: 14px 0; border-bottom: 1px solid #f8fafc; font-size: 13px; }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .badge-success { background: rgba(0, 208, 132, 0.1); color: var(--success); }
+        .badge-primary { background: rgba(243, 146, 0, 0.1); color: var(--primary); }
+        .instructor-avatar { width: 36px; height: 36px; border-radius: 18px; object-fit: cover; }
+        .progress-mini { width: 80px; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-top: 4px; }
+        .progress-fill { height: 100%; background: var(--primary); }
+
+        .schedule-grid { display: grid; grid-template-columns: 80px 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+        .time-label { background: #f8fafc; padding: 16px; font-weight: 600; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; }
+        .slot-content { background: white; padding: 12px; min-height: 70px; }
+        .lesson-tag { background: #f1f5f9; border-left: 4px solid var(--primary); padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <div class="gallery-header">
+        <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/08/Risorsa-2x.png">
+        <h1>Admin Management Suite</h1>
+        <p style="color: #64748b; font-weight: 600; margin-top: 8px;">Interactive Mockup Gallery · Desktop Version</p>
+    </div>
+
+    <!-- 1. DASHBOARD -->
+    <div class="desktop-container">
+        <div class="screen-label">1. Dashboard / Panoramica</div>
+        <div class="browser-frame">
+            <div class="browser-toolbar">
+                <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                <div style="background: white; border-radius: 4px; flex: 1; margin: 0 100px; height: 24px; display: flex; align-items: center; padding: 0 10px; font-size: 11px; color: #94a3b8;">admin.autoscuolarampone.it/dashboard</div>
+            </div>
+            <div class="admin-layout">
+                <div class="sidebar">
+                    <div class="sidebar-brand"><img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/08/Risorsa-2x.png"><span>RAMPONE</span></div>
+                    <div class="nav-item active"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</div>
+                    <div class="nav-item"><i data-lucide="users" style="width: 18px;"></i> Studenti</div>
+                    <div class="nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Calendario</div>
+                    <div class="nav-item"><i data-lucide="file-text" style="width: 18px;"></i> Pratiche</div>
+                    <div class="nav-item"><i data-lucide="user-check" style="width: 18px;"></i> Staff</div>
+                </div>
+                <div class="main-view">
+                    <div class="topbar">
+                        <div style="font-weight: 600; color: var(--text-secondary); font-size: 14px;">Cerca qualcosa...</div>
+                        <div style="display: flex; align-items: center; gap: 12px;"><p style="font-weight: 700; font-size: 13px;">Fabrizio Rampone</p><img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/09/FABRIZIO.png" class="instructor-avatar"></div>
+                    </div>
+                    <div class="content">
+                        <h1>Benvenuto, Fabrizio</h1>
+                        <div class="stats-grid">
+                            <div class="stat-card"><p class="stat-label">Studenti</p><p class="stat-value">124</p></div>
+                            <div class="stat-card"><p class="stat-label">Pass Rate</p><p class="stat-value">97.5%</p></div>
+                            <div class="stat-card"><p class="stat-label">Guide Oggi</p><p class="stat-value">28</p></div>
+                            <div class="stat-card"><p class="stat-label">Fatturato</p><p class="stat-value">€14.2k</p></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                            <div class="panel">
+                                <h2>Prenotazioni Recenti</h2>
+                                <table class="data-table">
+                                    <thead><tr><th>Studente</th><th>Tipo</th><th>Stato</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><strong>Marco Bianchi</strong></td><td>Urbana</td><td><span class="badge badge-success">Conclusa</span></td></tr>
+                                        <tr><td><strong>Giulia Rossi</strong></td><td>Autostrada</td><td><span class="badge badge-primary">Pendente</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="panel">
+                                <h2>Istruttori Attivi</h2>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+                                    <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/09/ENZO.png" class="instructor-avatar">
+                                    <div><p style="font-weight: 700; font-size: 13px;">Enzo</p><p style="font-size: 11px; color: var(--text-secondary);">Via Cosmo</p></div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0;">
+                                    <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/09/PAOLA.png" class="instructor-avatar">
+                                    <div><p style="font-weight: 700; font-size: 13px;">Paola</p><p style="font-size: 11px; color: var(--text-secondary);">Via Rosazza</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. STUDENTI -->
+    <div class="desktop-container">
+        <div class="screen-label">2. Gestione Studenti</div>
+        <div class="browser-frame">
+            <div class="browser-toolbar">
+                <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            </div>
+            <div class="admin-layout">
+                <div class="sidebar">
+                    <div class="sidebar-brand"><img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/08/Risorsa-2x.png"><span>RAMPONE</span></div>
+                    <div class="nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</div>
+                    <div class="nav-item active"><i data-lucide="users" style="width: 18px;"></i> Studenti</div>
+                    <div class="nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Calendario</div>
+                    <div class="nav-item"><i data-lucide="file-text" style="width: 18px;"></i> Pratiche</div>
+                    <div class="nav-item"><i data-lucide="user-check" style="width: 18px;"></i> Staff</div>
+                </div>
+                <div class="main-view">
+                    <div class="topbar">
+                        <div style="font-weight: 600; color: var(--text-secondary); font-size: 14px;">Cerca studente...</div>
+                        <button style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;">+ Nuovo Studente</button>
+                    </div>
+                    <div class="content">
+                        <h1>Registro Studenti</h1>
+                        <div class="panel">
+                            <table class="data-table">
+                                <thead><tr><th>Studente</th><th>Patente</th><th>Ore</th><th>Foglio Rosa</th><th>Stato</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Marco Bianchi</strong><p style="font-size: 11px; color: var(--text-secondary);">marco@email.it</p></td>
+                                        <td>B (Auto)</td>
+                                        <td>12 / 30h <div class="progress-mini"><div class="progress-fill" style="width: 40%;"></div></div></td>
+                                        <td>01/03/2027</td>
+                                        <td><span class="badge badge-primary">Teoria Superata</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Sofia Bruno</strong><p style="font-size: 11px; color: var(--text-secondary);">sofia@email.it</p></td>
+                                        <td>B (Auto)</td>
+                                        <td>30 / 30h <div class="progress-mini"><div class="progress-fill" style="width: 100%; background: var(--success);"></div></div></td>
+                                        <td><span style="color: var(--danger);">01/05/2026</span></td>
+                                        <td><span class="badge badge-success">Esame Pratico</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. CALENDARIO -->
+    <div class="desktop-container">
+        <div class="screen-label">3. Calendario Guide</div>
+        <div class="browser-frame">
+            <div class="browser-toolbar">
+                <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            </div>
+            <div class="admin-layout">
+                <div class="sidebar">
+                    <div class="sidebar-brand"><img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/08/Risorsa-2x.png"><span>RAMPONE</span></div>
+                    <div class="nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</div>
+                    <div class="nav-item"><i data-lucide="users" style="width: 18px;"></i> Studenti</div>
+                    <div class="nav-item active"><i data-lucide="calendar" style="width: 18px;"></i> Calendario</div>
+                    <div class="nav-item"><i data-lucide="file-text" style="width: 18px;"></i> Pratiche</div>
+                    <div class="nav-item"><i data-lucide="user-check" style="width: 18px;"></i> Staff</div>
+                </div>
+                <div class="main-view">
+                    <div class="topbar">
+                        <div style="font-weight: 700; font-size: 15px;">Martedì 14 Aprile, 2026</div>
+                        <div style="display: flex; gap: 8px;">
+                            <button style="background: white; border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; font-size: 12px;">Oggi</button>
+                            <button style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600;">Settimana</button>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <h1>Timeline Giornaliera</h1>
+                        <div class="panel" style="padding: 0; overflow: hidden;">
+                            <div class="schedule-grid">
+                                <div class="time-label">09:00</div>
+                                <div class="slot-content">
+                                    <div class="lesson-tag">
+                                        <div><strong>Marco Bianchi</strong><p style="font-size: 11px;">Enzo · Via Cosmo</p></div>
+                                        <span class="badge badge-success">Svolto</span>
+                                    </div>
+                                </div>
+                                <div class="time-label">10:30</div>
+                                <div class="slot-content">
+                                    <div class="lesson-tag" style="border-color: #8b5cf6;">
+                                        <div><strong>Giulia Rossi</strong><p style="font-size: 11px;">Paola · Via Rosazza</p></div>
+                                        <span class="badge badge-primary">In Corso</span>
+                                    </div>
+                                </div>
+                                <div class="time-label">14:00</div>
+                                <div class="slot-content"><p style="font-style: italic; color: #94a3b8; font-size: 12px; display: flex; align-items: center; height: 100%;">Slot Libero</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. PRATICHE -->
+    <div class="desktop-container">
+        <div class="screen-label">4. Agenzia Pratiche</div>
+        <div class="browser-frame">
+            <div class="browser-toolbar">
+                <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            </div>
+            <div class="admin-layout">
+                <div class="sidebar">
+                    <div class="sidebar-brand"><img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/08/Risorsa-2x.png"><span>RAMPONE</span></div>
+                    <div class="nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</div>
+                    <div class="nav-item"><i data-lucide="users" style="width: 18px;"></i> Studenti</div>
+                    <div class="nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Calendario</div>
+                    <div class="nav-item active"><i data-lucide="file-text" style="width: 18px;"></i> Pratiche</div>
+                    <div class="nav-item"><i data-lucide="user-check" style="width: 18px;"></i> Staff</div>
+                </div>
+                <div class="main-view">
+                    <div class="topbar">
+                        <div style="font-weight: 600; color: var(--text-secondary); font-size: 14px;">Cerca pratica #...</div>
+                        <button style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;">+ Nuova Pratica</button>
+                    </div>
+                    <div class="content">
+                        <h1>Pratiche Auto</h1>
+                        <div class="panel">
+                            <table class="data-table">
+                                <thead><tr><th>ID</th><th>Cliente</th><th>Servizio</th><th>Scadenza</th><th>Stato</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#PR-4521</td>
+                                        <td><strong>Roberto Ferri</strong></td>
+                                        <td>Rinnovo Patente</td>
+                                        <td>20/04/2026</td>
+                                        <td><span class="badge badge-success">Pronta</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#PR-4522</td>
+                                        <td><strong>Maria Gialli</strong></td>
+                                        <td>Passaggio Proprietà</td>
+                                        <td>--</td>
+                                        <td><span class="badge badge-primary">In Lavorazione</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. STAFF -->
+    <div class="desktop-container">
+        <div class="screen-label">5. Team & Staff</div>
+        <div class="browser-frame">
+            <div class="browser-toolbar">
+                <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            </div>
+            <div class="admin-layout">
+                <div class="sidebar">
+                    <div class="sidebar-brand"><img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/08/Risorsa-2x.png"><span>RAMPONE</span></div>
+                    <div class="nav-item"><i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard</div>
+                    <div class="nav-item"><i data-lucide="users" style="width: 18px;"></i> Studenti</div>
+                    <div class="nav-item"><i data-lucide="calendar" style="width: 18px;"></i> Calendario</div>
+                    <div class="nav-item"><i data-lucide="file-text" style="width: 18px;"></i> Pratiche</div>
+                    <div class="nav-item active"><i data-lucide="user-check" style="width: 18px;"></i> Staff</div>
+                </div>
+                <div class="main-view">
+                    <div class="topbar">
+                        <div style="font-weight: 600; color: var(--text-secondary); font-size: 14px;">Gestione risorse umane</div>
+                    </div>
+                    <div class="content">
+                        <h1>Il Nostro Team</h1>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                            <div class="panel">
+                                <h2>Istruttori</h2>
+                                <div style="display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f1f5f9;">
+                                    <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/09/ENZO.png" style="width: 50px; height: 50px; border-radius: 25px;">
+                                    <div style="flex: 1;"><strong>Enzo</strong><p style="font-size: 12px; color: var(--text-secondary);">Sede Via Cosmo</p></div>
+                                    <button style="border: 1px solid var(--border); background: white; padding: 6px 12px; border-radius: 6px; font-size: 11px;">Gestisci</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 16px; padding: 16px 0;">
+                                    <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/09/PAOLA.png" style="width: 50px; height: 50px; border-radius: 25px;">
+                                    <div style="flex: 1;"><strong>Paola</strong><p style="font-size: 12px; color: var(--text-secondary);">Sede Via Rosazza</p></div>
+                                    <button style="border: 1px solid var(--border); background: white; padding: 6px 12px; border-radius: 6px; font-size: 11px;">Gestisci</button>
+                                </div>
+                            </div>
+                            <div class="panel">
+                                <h2>Segreteria</h2>
+                                <div style="display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f1f5f9;">
+                                    <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/09/STEFANIA.png" style="width: 50px; height: 50px; border-radius: 25px;">
+                                    <div style="flex: 1;"><strong>Stefania</strong><p style="font-size: 12px; color: var(--text-secondary);">Via Cosmo</p></div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 16px; padding: 16px 0;">
+                                    <img src="https://www.autoscuolarampone.it/wp-content/uploads/2023/09/IRENE-1.png" style="width: 50px; height: 50px; border-radius: 25px;">
+                                    <div style="flex: 1;"><strong>Irene</strong><p style="font-size: 12px; color: var(--text-secondary);">Via Rosazza</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
